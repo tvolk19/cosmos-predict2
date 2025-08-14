@@ -19,9 +19,9 @@ import json
 import torch.distributed as dist
 
 from imaginaire.utils import log
-from server.command_ipc import WorkerCommand, WorkerStatus
-from server.deploy_config import Config
-from server.gradio_util import create_worker_pipeline
+from cosmos_gradio.command_ipc import WorkerCommand, WorkerStatus
+from cosmos_gradio.server_config import Config
+from cosmos_gradio.gradio_util import create_worker_pipeline
 
 
 class ParamValidator:
