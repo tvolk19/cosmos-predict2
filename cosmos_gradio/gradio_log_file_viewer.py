@@ -16,7 +16,9 @@
 
 import gradio as gr
 
-from server.deploy_config import Config
+from cosmos_gradio.server_config import Config
+
+cfg = Config()
 
 
 def _tail_file(file_path: str, num_lines: int) -> str:
@@ -57,7 +59,7 @@ def _tail_file(file_path: str, num_lines: int) -> str:
 
 
 def log_file_viewer(
-    log_file: str = Config.log_file,
+    log_file: str = cfg.log_file,
     num_lines: int = 100,
     update_interval: float = 1,
 ) -> str:

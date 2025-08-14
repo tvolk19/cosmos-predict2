@@ -16,11 +16,10 @@
 import json
 import os
 from imaginaire.utils import log
-from server.deploy_config import Config
-from server.model_server import ModelServer
-from server.gradio_app_cli import GradioCLIApp
-from server.gradio_interface import create_gradio_interface
-from gradio_util import get_output_folder, get_outputs, create_worker_pipeline
+from cosmos_gradio.model_server import ModelServer
+from cosmos_gradio.gradio_app_cli import GradioCLIApp
+from cosmos_gradio.gradio_interface import create_gradio_interface
+from cosmos_gradio.gradio_util import get_output_folder, get_outputs, create_worker_pipeline
 
 
 class GradioApp:
@@ -30,12 +29,13 @@ class GradioApp:
         else:
             self.pipeline = ModelServer(num_workers=cfg.num_gpus)
             _, self.validator = create_worker_pipeline(cfg, create_model=False)
+        self.cfg = cfg
 
     def infer(
         self,
         request_text,
     ):
-        output_folder = get_output_folder(Config.output_dir)
+        output_folder = get_output_folder(self.cfg.output_dir)
 
         try:
             request_data = json.loads(request_text)
@@ -55,29 +55,3 @@ class GradioApp:
             return None, f"Error: {e}"
 
         return get_outputs(output_folder)
-
-
-if __name__ == "__main__":
-
-    cfg = Config()
-    log.info(f"Starting Gradio app with config: {str(cfg)}")
-
-    if not os.path.exists(cfg.checkpoint_dir):
-        print(f"Error: checkpoints directory {cfg.checkpoint_dir} not found.")
-        exit(1)
-
-    if cfg.use_cli:  # todo use cfg.cli_app instead?
-        app = GradioCLIApp(num_workers=cfg.num_gpus, checkpoint_dir=cfg.checkpoint_dir)
-    else:
-        app = GradioApp(cfg)
-
-    interface = create_gradio_interface(app.infer)
-
-    interface.launch(
-        server_name="0.0.0.0",
-        server_port=8080,
-        share=False,
-        debug=True,
-        max_file_size="500MB",
-        allowed_paths=[cfg.output_dir, cfg.uploads_dir],
-    )

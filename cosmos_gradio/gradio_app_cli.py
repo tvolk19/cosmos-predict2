@@ -13,12 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+
 import json
 import os
 import subprocess
 from imaginaire.utils import log
-from server.deploy_config import Config
-from gradio_util import get_output_folder, get_outputs
+from cosmos_gradio.gradio_util import get_output_folder, get_outputs
 
 
 class GradioCLIApp:
@@ -26,10 +26,11 @@ class GradioCLIApp:
     The parameter validation is left to the CLI app.
     This server has no communication channel with the workers, so no errors are reported."""
 
-    def __init__(self, num_workers: int = 8, checkpoint_dir: str = "checkpoints"):
+    def __init__(self, num_workers: int = 8, checkpoint_dir: str = "checkpoints", out_dir: str = "outputs"):
         self.num_workers = num_workers
         self.checkpoint_dir = "checkpoints/nvidia/Cosmos-Transfer2-Private/model.pt"
         self.process = None
+        self.out_dir = out_dir
         self._setup_environment()
 
     def _setup_environment(self):
@@ -37,7 +38,7 @@ class GradioCLIApp:
 
     def infer_dict(self, args: dict, output_dir=None):
         if output_dir is None:
-            output_dir = get_output_folder(Config.output_dir)
+            output_dir = get_output_folder(self.output_dir)
         else:
             os.makedirs(output_dir, exist_ok=True)
 

@@ -15,21 +15,21 @@
 
 import json
 import gradio as gr
-from server.deploy_config import Config
+from cosmos_gradio.server_config import Config
 
-from server import gradio_file_server, gradio_log_file_viewer
+from cosmos_gradio import gradio_file_server, gradio_log_file_viewer
 
 
-def create_gradio_interface(infer_func):
+def create_gradio_interface(infer_func, cfg):
     with gr.Blocks(title="Cosmos-Transfer2 Video Generation", theme=gr.themes.Soft()) as interface:
         gr.Markdown("# Cosmos-Transfer2: World Generation with Adaptive Multimodal Control")
         gr.Markdown("Upload a video and configure controls to generate a new video with the Cosmos-Transfer1 model.")
 
         with gr.Row():
-            gradio_file_server.file_server_components(Config.uploads_dir, open=False)
+            gradio_file_server.file_server_components(cfg.uploads_dir, open=False)
 
         gr.Markdown("---")
-        gr.Markdown(f"**Output Directory**: {Config.output_dir}")
+        gr.Markdown(f"**Output Directory**: {cfg.output_dir}")
 
         with gr.Row():
             with gr.Column(scale=1):
@@ -93,7 +93,7 @@ def create_gradio_interface(infer_func):
                 status_text = gr.Textbox(label="Status", lines=5, interactive=False)
                 generate_btn = gr.Button("Generate Video", variant="primary", size="lg")
 
-        gradio_log_file_viewer.log_file_viewer(log_file=Config.log_file, num_lines=100, update_interval=1)
+        gradio_log_file_viewer.log_file_viewer(log_file=cfg.log_file, num_lines=100, update_interval=1)
 
         generate_btn.click(
             fn=infer_func,

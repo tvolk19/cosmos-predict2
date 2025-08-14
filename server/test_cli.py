@@ -1,14 +1,9 @@
 import os
 import json
 from pathlib import Path
-from server.transfer_worker import (
-    TransferWorker,
-    TransferValidator,
-)
+from cosmos_gradio.gradio_app_cli import GradioCLIApp
+from cosmos_gradio.server_config import Config
 from imaginaire.utils import log
-from server.deploy_config import Config
-from server.model_server import ModelServer
-from server.gradio_app_cli import GradioCLIApp
 
 
 def get_spec(spec_file):

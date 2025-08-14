@@ -19,11 +19,11 @@ import os
 
 @dataclass
 class Config:
-    checkpoint_dir: str = os.getenv("CHECKPOINT_DIR", "checkpoints")
+    output_dir: str = os.getenv("OUTPUT_DIR", "outputs/")
+    uploads_dir: str = os.getenv("UPLOADS_DIR", "uploads/")
+    log_file: str = os.getenv("LOG_FILE", "output.log")
     num_gpus: int = int(os.environ.get("NUM_GPU", 1))
-    model_size: str = os.getenv("MODEL_SIZE", "2B")  # 2B or 14B
-    resolution: str = os.getenv("RESOLUTION", "720")  # 480 or 720
-    fps: int = int(os.getenv("FPS", 16))  # 10 or 16
-    load_ema: bool = os.getenv("LOAD_EMA", "False").lower() in ("true", "1", "yes")
-    disable_prompt_refiner: bool = os.getenv("DISABLE_PROMPT_REFINER", "True").lower() in ("true", "1", "yes")
-    offload_prompt_refiner: bool = os.getenv("OFFLOAD_PROMPT_REFINER", "False").lower() in ("true", "1", "yes")
+    factory_module: str = os.getenv("FACTORY_MODULE", "server.predict_worker")
+    factory_function: str = os.getenv("FACTORY_FUNCTION", "create_predict_worker")
+    use_cli: bool = os.getenv("USE_CLI", "False").lower() in ("true", "1", "yes")
+    cli_app: str = os.getenv("CLI_APP", "cosmos_transfer2/inference/inference_vid2vid_control_batch.py")

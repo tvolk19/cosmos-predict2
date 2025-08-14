@@ -17,7 +17,7 @@ import subprocess
 import time
 
 from imaginaire.utils import log
-from server.command_ipc import WorkerCommand, WorkerStatus
+from cosmos_gradio.command_ipc import WorkerCommand, WorkerStatus
 
 
 class ModelServer:
@@ -98,7 +98,7 @@ class ModelServer:
             f"--nproc_per_node={self.num_workers}",
             "--nnodes=1",
             "--node_rank=0",
-            "server/model_worker.py",
+            "cosmos_gradio/model_worker.py",
         ]
 
         log.info(f"Running command: {' '.join(torchrun_cmd)}")
