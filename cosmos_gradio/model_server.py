@@ -15,9 +15,10 @@
 import os
 import subprocess
 import time
-
+import importlib
 from imaginaire.utils import log
 from cosmos_gradio.command_ipc import WorkerCommand, WorkerStatus
+from cosmos_gradio.server_config import Config
 
 
 class ModelServer:
@@ -51,7 +52,7 @@ class ModelServer:
 
     """
 
-    def __init__(self, num_workers: int = 8):
+    def __init__(self, cfg: Config):
         """Initialize the model server and start worker processes.
 
         Creates IPC channels for worker communication, sets up the environment,
@@ -65,17 +66,17 @@ class ModelServer:
             Exception: If worker startup fails or workers don't signal readiness
         """
 
-        self.num_workers = num_workers
+        self.num_workers = cfg.num_gpus
         self.process = None
-        self.worker_command = WorkerCommand(num_workers)
-        self.worker_status = WorkerStatus(num_workers)
+        self.worker_command = WorkerCommand(self.num_workers)
+        self.worker_status = WorkerStatus(self.num_workers)
         self._setup_environment()
-        self.start_workers()
+        self.start_workers(cfg)
 
     def _setup_environment(self):
         self.env = os.environ.copy()
 
-    def start_workers(self):
+    def start_workers(self, cfg):
         """Start worker processes using torchrun.
 
         This method performs the complete worker startup sequence:
@@ -87,6 +88,16 @@ class ModelServer:
         Raises:
             Exception: If the subprocess fails to start or workers don't initialize
         """
+        # test load worker and fail early on incorrect parameters
+        log.info(f"initializing model using {cfg.factory_module}.{cfg.factory_function}")
+        module = __import__(cfg.factory_module, fromlist=[cfg.factory_function])
+        factory_function = getattr(module, cfg.factory_function)
+
+        module = __import__("cosmos_gradio.model_worker")
+        module = importlib.import_module("cosmos_gradio.model_worker")
+
+        module_path = module.__file__
+        log.info(f"Module loaded from: {module_path}")
 
         self.worker_command.cleanup()
         self.worker_status.cleanup()
@@ -98,7 +109,7 @@ class ModelServer:
             f"--nproc_per_node={self.num_workers}",
             "--nnodes=1",
             "--node_rank=0",
-            "cosmos_gradio/model_worker.py",
+            module_path,
         ]
 
         log.info(f"Running command: {' '.join(torchrun_cmd)}")

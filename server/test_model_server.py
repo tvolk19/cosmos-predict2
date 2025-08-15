@@ -1,7 +1,6 @@
-import json
 from cosmos_gradio.model_server import ModelServer
-from server.video2world_worker import Video2World_Validator, Video2World_Worker
-from server.text2image_worker import Text2Image_Validator, Text2Image_Worker
+from server.video2world_worker import Video2World_Validator
+from server.text2image_worker import Text2Image_Validator
 from imaginaire.utils import log
 from cosmos_gradio.server_config import Config
 
@@ -13,7 +12,7 @@ sample = {"input_path": "assets/video2world/input0.jpg", "num_conditional_frames
 def test_video2world():
 
     folder = "outputs/"
-    with ModelServer(num_workers=Config.num_gpus) as pipeline:
+    with ModelServer(Config()) as pipeline:
         validator = Video2World_Validator()
 
         log.info("Inference start****************************************")
@@ -27,7 +26,7 @@ def test_video2world():
 def test_text2image():
 
     folder = "outputs/"
-    with ModelServer(num_workers=Config.num_gpus) as pipeline:
+    with ModelServer(Config()) as pipeline:
         validator = Text2Image_Validator()
 
         log.info("Inference start****************************************")

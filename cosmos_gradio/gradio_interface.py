@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
 import gradio as gr
 from cosmos_gradio.server_config import Config
 
@@ -22,6 +21,7 @@ from cosmos_gradio import gradio_file_server, gradio_log_file_viewer
 
 def create_gradio_interface(infer_func, header, default_request, help_text, cfg):
     with gr.Blocks(title=header, theme=gr.themes.Soft()) as interface:
+        gr.Markdown(f"# {header}")
         gr.Markdown("Upload a media file. Use the resulting server file path as input media in the json request.")
 
         with gr.Row():

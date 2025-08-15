@@ -76,7 +76,7 @@ class ModelWorker:
         log.info(f"Saved prompt to {prompt_save_path}")
 
 
-def create_sample_worker(cfg, create_model=True):
+def create_worker(create_model=True):
     """Create a sample worker for testing purposes.
 
     For any deployed model a factory function needs to be defined.
