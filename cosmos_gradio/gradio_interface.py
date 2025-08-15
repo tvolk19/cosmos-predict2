@@ -20,7 +20,7 @@ from cosmos_gradio.server_config import Config
 from cosmos_gradio import gradio_file_server, gradio_log_file_viewer
 
 
-def create_gradio_interface(infer_func, cfg):
+def create_gradio_interface(infer_func, default_request, help_text, cfg):
     with gr.Blocks(title="Cosmos-Transfer2 Video Generation", theme=gr.themes.Soft()) as interface:
         gr.Markdown("# Cosmos-Transfer2: World Generation with Adaptive Multimodal Control")
         gr.Markdown("Upload a video and configure controls to generate a new video with the Cosmos-Transfer1 model.")
@@ -36,46 +36,14 @@ def create_gradio_interface(infer_func, cfg):
                 # Single request input field
                 request_input = gr.Textbox(
                     label="Request (JSON)",
-                    value=json.dumps(
-                        {
-                            "input_path": "assets/video2world/input0.jpg",
-                            "num_conditional_frames": 1,
-                            "prompt": "A nighttime city bus terminal gradually shifts from stillness to subtle movement. At first, multiple double-decker buses are parked under the glow of overhead lights, with a central bus labeled '87D' facing forward and stationary. As the video progresses, the bus in the middle moves ahead slowly, its headlights brightening the surrounding area and casting reflections onto adjacent vehicles. The motion creates space in the lineup, signaling activity within the otherwise quiet station. It then comes to a smooth stop, resuming its position in line. Overhead signage in Chinese characters remains illuminated, enhancing the vibrant, urban night scene.",
-                        },
-                        indent=2,
-                    ),
+                    value=default_request,
                     lines=20,
                     interactive=True,
                 )
 
                 # Help section
                 with gr.Accordion("Request Format Help", open=False):
-                    gr.Markdown(
-                        """
-                    ### Required Fields:
-                    At least one of the following controlnet specifications must be provided:
-                    - `vis` (object): Vis controlnet (default: {"control_weight": 0.0})
-                    - `seg` (object): Segmentation controlnet (default: {"control_weight": 0.0})
-                    - `edge` (object): Edge controlnet (default: {"control_weight": 0.0})
-                    - `depth` (object): Depth controlnet (default: {"control_weight": 0.0})
-                    - `keypoint` (object): Keypoint controlnet (default: {"control_weight": 0.0})
-                    - `upscale` (object): Upscale controlnet (default: {"control_weight": 0.0})
-                    - `hdmap` (object): HDMap controlnet (default: {"control_weight": 0.0})
-                    - `lidar` (object): Lidar controlnet (default: {"control_weight": 0.0})
-
-                    ### Optional Fields:
-                    - `input_video_path` (string): Path to the input video file
-                    - `prompt` (string): Text prompt describing the desired output
-                    - `negative_prompt` (string): What to avoid in the output
-                    - `guidance` (float): Guidance scale (1-15, default: 7.0)
-                    - `num_steps` (int): Number of inference steps (10-50, default: 35)
-                    - `seed` (int): Random seed (default: 1)
-                    - `sigma_max` (float): Maximum noise level (0-80, default: 70.0)
-                    - `blur_strength` (string): One of ["very_low", "low", "medium", "high", "very_high"] (default: "medium")
-                    - `canny_threshold` (string): One of ["very_low", "low", "medium", "high", "very_high"] (default: "medium")
-                    ```
-                    """
-                    )
+                    gr.Markdown(help_text)
                 with gr.Accordion("Tips", open=False):
                     gr.Markdown(
                         """

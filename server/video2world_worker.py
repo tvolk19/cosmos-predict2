@@ -15,7 +15,7 @@ from cosmos_predict2.configs.base.config_video2world import (
 from cosmos_predict2.pipelines.video2world import _IMAGE_EXTENSIONS, _VIDEO_EXTENSIONS, Video2WorldPipeline
 from imaginaire.utils import distributed, log, misc
 from imaginaire.utils.io import save_image_or_video, save_text_prompts
-from server.deploy_config import Config
+from server.model_config import Config
 
 _DEFAULT_NEGATIVE_PROMPT = "The video captures a series of frames showing ugly scenes, static with no motion, motion blur, over-saturation, shaky footage, low resolution, grainy texture, pixelated images, poorly lit areas, underexposed and overexposed scenes, poor color balance, washed out colors, choppy sequences, jerky movements, low frame rate, artifacting, color banding, unnatural transitions, outdated special effects, fake elements, unconvincing visuals, poorly edited content, jump cuts, visual noise, and flickering. Overall, the video is of poor quality."
 
@@ -50,13 +50,7 @@ def validate_input_file(input_path: str, num_conditional_frames: int) -> bool:
     return True
 
 
-class PredictValidator:
-    def extract_params(self, json_data):
-        args = {}
-        for key, value in json_data.items():
-            args[key] = value
-        return args
-
+class Video2World_Validator:
     def validate_params(
         self,
         input_path: str = "assets/video2world/input0.jpg",
@@ -93,7 +87,10 @@ class PredictValidator:
         return args
 
     def parse_and_validate(self, controlnet_specs):
-        args_dict = self.extract_params(controlnet_specs)
+        args_dict = {}
+        for key, value in controlnet_specs.items():
+            args_dict[key] = value
+
         args_dict = self.validate_params(
             **args_dict,
         )
@@ -103,7 +100,7 @@ class PredictValidator:
         return args_dict
 
 
-class PredictWorker:
+class Video2World_Worker:
     def __init__(
         self,
         num_gpus=1,
@@ -245,21 +242,13 @@ class PredictWorker:
         self._infer(**args)
 
 
-def create_predict_worker(create_model=True):
-    """Factory function to create predict pipeline and validator.
+def create_worker(create_model=True):
 
-    Args:
-        cfg: Configuration object with model settings including checkpoint_dir
-        create_model (bool): Whether to actually create the model pipeline (default: True)
-
-    Returns:
-        tuple: (pipeline, validator) - TransferPipeline instance and TransferValidator
-    """
     log.info("Creating predict pipeline and validator")
     cfg = Config()
     pipeline = None
     if create_model:
-        pipeline = PredictWorker(
+        pipeline = Video2World_Worker(
             num_gpus=int(os.environ.get("WORLD_SIZE", 1)),
             checkpoint_dir=cfg.checkpoint_dir,
             model_size=cfg.model_size,
@@ -272,5 +261,5 @@ def create_predict_worker(create_model=True):
         gc.collect()
         torch.cuda.empty_cache()
 
-    validator = PredictValidator()
+    validator = Video2World_Validator()
     return pipeline, validator
