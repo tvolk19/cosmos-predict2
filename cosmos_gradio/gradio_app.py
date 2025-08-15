@@ -14,7 +14,6 @@
 # limitations under the License.
 
 import json
-from cosmos_predict2 import module
 from imaginaire.utils import log
 from cosmos_gradio.model_server import ModelServer
 from cosmos_gradio.gradio_util import get_output_folder, get_outputs, create_worker_pipeline
@@ -26,7 +25,7 @@ class GradioApp:
         if cfg.num_gpus == 1:
             self.pipeline, self.validator = create_worker_pipeline(cfg)
         else:
-            self.pipeline = ModelServer(num_workers=cfg.num_gpus)
+            self.pipeline = ModelServer(cfg)
             _, self.validator = create_worker_pipeline(cfg, create_model=False)
         self.cfg = cfg
 

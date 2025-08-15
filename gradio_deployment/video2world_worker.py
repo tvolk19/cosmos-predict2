@@ -15,7 +15,7 @@ from cosmos_predict2.configs.base.config_video2world import (
 from cosmos_predict2.pipelines.video2world import _IMAGE_EXTENSIONS, _VIDEO_EXTENSIONS, Video2WorldPipeline
 from imaginaire.utils import distributed, log, misc
 from imaginaire.utils.io import save_image_or_video, save_text_prompts
-from gradio_app.model_config import Config
+from gradio_deployment.model_config import Config
 
 _DEFAULT_NEGATIVE_PROMPT = "The video captures a series of frames showing ugly scenes, static with no motion, motion blur, over-saturation, shaky footage, low resolution, grainy texture, pixelated images, poorly lit areas, underexposed and overexposed scenes, poor color balance, washed out colors, choppy sequences, jerky movements, low frame rate, artifacting, color banding, unnatural transitions, outdated special effects, fake elements, unconvincing visuals, poorly edited content, jump cuts, visual noise, and flickering. Overall, the video is of poor quality."
 

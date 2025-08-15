@@ -15,7 +15,7 @@ from cosmos_predict2.configs.base.config_text2image import (
 from cosmos_predict2.pipelines.text2image import Text2ImagePipeline
 from imaginaire.utils import distributed, log, misc
 from imaginaire.utils.io import save_image_or_video, save_text_prompts
-from gradio_app.model_config import Config
+from gradio_deployment.model_config import Config
 
 _DEFAULT_POSITIVE_PROMPT = "A well-worn broom sweeps across a dusty wooden floor, its bristles gathering crumbs and flecks of debris in swift, rhythmic strokes. Dust motes dance in the sunbeams filtering through the window, glowing momentarily before settling. The quiet swish of straw brushing wood is interrupted only by the occasional creak of old floorboards. With each pass, the floor grows cleaner, restoring a sense of quiet order to the humble room."
 
