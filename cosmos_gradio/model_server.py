@@ -47,7 +47,7 @@ class ModelServer:
         FACTORY_MODULE="cosmos_transfer1.diffusion.inference.transfer_pipeline"
         FACTORY_FUNCTION="create_transfer_pipeline"
 
-        with ModelServer(num_workers=4) as server:
+        with ModelServer() as server:
             server.infer({"prompt": "A beautiful sunset", "seed": 42})
 
     """
@@ -96,6 +96,7 @@ class ModelServer:
         module = __import__("cosmos_gradio.model_worker")
         module = importlib.import_module("cosmos_gradio.model_worker")
 
+        # if the server is in a library we have to discover the file path
         module_path = module.__file__
         log.info(f"Module loaded from: {module_path}")
 
@@ -109,7 +110,7 @@ class ModelServer:
             f"--nproc_per_node={self.num_workers}",
             "--nnodes=1",
             "--node_rank=0",
-            module_path,
+            "cosmos_gradio/model_worker.py",  # TODO module_path,
         ]
 
         log.info(f"Running command: {' '.join(torchrun_cmd)}")

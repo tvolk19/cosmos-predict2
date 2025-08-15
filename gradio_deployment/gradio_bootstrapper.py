@@ -5,7 +5,7 @@ from cosmos_gradio.gradio_app_cli import GradioCLIApp
 from cosmos_gradio.gradio_app import GradioApp
 from cosmos_gradio.gradio_interface import create_gradio_interface
 from imaginaire.utils import log
-from gradio_app.model_config import Config as ModelConfig
+from gradio_deployment.model_config import Config as ModelConfig
 
 header = {"video2world": "Cosmos-Predict2 Video2World", "text2image": "Cosmos-Predict2 Text2Image"}
 

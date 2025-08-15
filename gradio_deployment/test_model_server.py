@@ -1,6 +1,6 @@
 from cosmos_gradio.model_server import ModelServer
-from gradio_app.video2world_worker import Video2World_Validator
-from gradio_app.text2image_worker import Text2Image_Validator
+from gradio_deployment.video2world_worker import Video2World_Validator
+from gradio_deployment.text2image_worker import Text2Image_Validator
 from imaginaire.utils import log
 from cosmos_gradio.server_config import Config
 
