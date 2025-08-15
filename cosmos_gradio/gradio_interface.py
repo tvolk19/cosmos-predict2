@@ -20,10 +20,9 @@ from cosmos_gradio.server_config import Config
 from cosmos_gradio import gradio_file_server, gradio_log_file_viewer
 
 
-def create_gradio_interface(infer_func, default_request, help_text, cfg):
-    with gr.Blocks(title="Cosmos-Transfer2 Video Generation", theme=gr.themes.Soft()) as interface:
-        gr.Markdown("# Cosmos-Transfer2: World Generation with Adaptive Multimodal Control")
-        gr.Markdown("Upload a video and configure controls to generate a new video with the Cosmos-Transfer1 model.")
+def create_gradio_interface(infer_func, header, default_request, help_text, cfg):
+    with gr.Blocks(title=header, theme=gr.themes.Soft()) as interface:
+        gr.Markdown("Upload a media file. Use the resulting server file path as input media in the json request.")
 
         with gr.Row():
             gradio_file_server.file_server_components(cfg.uploads_dir, open=False)
@@ -44,16 +43,6 @@ def create_gradio_interface(infer_func, default_request, help_text, cfg):
                 # Help section
                 with gr.Accordion("Request Format Help", open=False):
                     gr.Markdown(help_text)
-                with gr.Accordion("Tips", open=False):
-                    gr.Markdown(
-                        """
-                    - **Use the file browser above** to upload your video and copy its path for the `input_video` field
-                    - **Describe a single, captivating scene**: Focus on one scene to prevent unnecessary shot changes
-                    - **Use detailed prompts**: Rich descriptions lead to better quality outputs
-                    - **Experiment with control weights**: Different combinations can yield different artistic effects
-                    - **Adjust sigma_max**: Lower values preserve more of the input video structure
-                    """
-                    )
 
             with gr.Column(scale=1):
                 # Output

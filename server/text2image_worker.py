@@ -173,11 +173,7 @@ def create_worker(create_model=True):
             num_gpus=int(os.environ.get("WORLD_SIZE", 1)),
             checkpoint_dir=cfg.checkpoint_dir,
             model_size=cfg.model_size,
-            resolution=cfg.resolution,
-            fps=cfg.fps,
             load_ema=cfg.load_ema,
-            disable_prompt_refiner=cfg.disable_prompt_refiner,
-            offload_prompt_refiner=cfg.offload_prompt_refiner,
         )
         gc.collect()
         torch.cuda.empty_cache()
