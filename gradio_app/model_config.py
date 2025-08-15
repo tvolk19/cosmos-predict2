@@ -19,7 +19,7 @@ import os
 
 @dataclass
 class Config:
-    model_name: str = os.getenv("MODEL_NAME", "text2image")  # video2world
+    model_name: str = os.getenv("MODEL_NAME", "video2world")
     checkpoint_dir: str = os.getenv("CHECKPOINT_DIR", "checkpoints")
     num_gpus: int = int(os.environ.get("NUM_GPU", 1))
     model_size: str = os.getenv("MODEL_SIZE", "2B")  # 2B or 14B
