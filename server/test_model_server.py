@@ -1,6 +1,7 @@
 import json
 from cosmos_gradio.model_server import ModelServer
-from server.predict_worker import PredictValidator
+from server.video2world_worker import Video2World_Validator, Video2World_Worker
+from server.text2image_worker import Text2Image_Validator, Text2Image_Worker
 from imaginaire.utils import log
 from cosmos_gradio.server_config import Config
 
@@ -9,11 +10,11 @@ prompt = "A nighttime city bus terminal gradually shifts from stillness to subtl
 sample = {"input_path": "assets/video2world/input0.jpg", "num_conditional_frames": 1, "prompt": prompt}
 
 
-def test_model_server():
+def test_video2world():
 
     folder = "outputs/"
     with ModelServer(num_workers=Config.num_gpus) as pipeline:
-        validator = PredictValidator()
+        validator = Video2World_Validator()
 
         log.info("Inference start****************************************")
 
@@ -23,5 +24,19 @@ def test_model_server():
         log.info("Inference complete****************************************")
 
 
+def test_text2image():
+
+    folder = "outputs/"
+    with ModelServer(num_workers=Config.num_gpus) as pipeline:
+        validator = Text2Image_Validator()
+
+        log.info("Inference start****************************************")
+
+        model_params = validator.parse_and_validate({})
+        model_params["output_dir"] = f"{folder}/"
+        pipeline.infer(model_params)
+        log.info("Inference complete****************************************")
+
+
 if __name__ == "__main__":
-    test_model_server()
+    test_text2image()
