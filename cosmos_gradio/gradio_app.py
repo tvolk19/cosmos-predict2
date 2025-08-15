@@ -23,11 +23,6 @@ from cosmos_gradio.gradio_util import get_output_folder, get_outputs, create_wor
 class GradioApp:
     def __init__(self, cfg):
 
-        # test load
-        log.info(f"initializing model using {cfg.factory_module}.{cfg.factory_function}")
-        module = __import__(cfg.factory_module, fromlist=[cfg.factory_function])
-        factory_function = getattr(module, cfg.factory_function)
-
         if cfg.num_gpus == 1:
             self.pipeline, self.validator = create_worker_pipeline(cfg)
         else:
