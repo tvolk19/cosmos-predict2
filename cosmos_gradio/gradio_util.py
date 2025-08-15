@@ -11,22 +11,33 @@ def get_output_folder(output_dir):
 
 
 def get_outputs(output_folder):
-    # Check if output was generated
-    output_path = os.path.join(output_folder, "output.mp4")
-    if os.path.exists(output_path):
-        # Read the generated prompt
-        prompt_path = os.path.join(output_folder, "output.txt")
-        final_prompt = ""
-        if os.path.exists(prompt_path):
-            with open(prompt_path, "r", encoding="utf-8") as f:
-                final_prompt = f.read().strip()
+    # Check if any mp4 file was generated
+    mp4_files = [f for f in os.listdir(output_folder) if f.endswith(".mp4")]
+    img_files = [f for f in os.listdir(output_folder) if f.endswith(".jpg")]
+    txt_files = [f for f in os.listdir(output_folder) if f.endswith(".txt")]
 
+    # Read the generated prompt
+    final_prompt = ""
+    if txt_files:
+        with open(os.path.join(output_folder, txt_files[0]), "r", encoding="utf-8") as f:
+            final_prompt = f.read().strip()
+
+    output_path = None
+    if mp4_files:
+        # Use the first mp4 file found
+        output_path = os.path.join(output_folder, mp4_files[0])
+
+    if img_files:
+        # Use the first image file found
+        output_path = os.path.join(output_folder, img_files[0])
+
+    if output_path:
         return (
             output_path,
-            f"Video generated successfully!\nOutput saved to: {output_folder}\nFinal prompt: {final_prompt}",
+            f"Output saved to: {output_path}\nFinal prompt: {final_prompt}",
         )
     else:
-        return None, f"Generation failed - no output video was created\nCheck folder: {output_folder}"
+        return None, f"Generation failed - no output was created\nCheck folder: {output_folder}"
 
 
 def create_worker_pipeline(cfg, create_model=True):
