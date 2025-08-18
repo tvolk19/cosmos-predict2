@@ -16,7 +16,7 @@
 
 import gradio as gr
 
-from cosmos_gradio.server_config import Config
+from gradio_deployment.fwk.server_config import Config
 
 cfg = Config()
 

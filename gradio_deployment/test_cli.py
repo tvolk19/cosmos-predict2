@@ -1,8 +1,8 @@
 import os
 import json
 from pathlib import Path
-from cosmos_gradio.gradio_app_cli import GradioCLIApp
-from cosmos_gradio.server_config import Config
+from gradio_deployment.fwk.gradio_app_cli import GradioCLIApp
+from gradio_deployment.fwk.server_config import Config
 from imaginaire.utils import log
 
 

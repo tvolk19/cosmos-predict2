@@ -18,7 +18,7 @@ import json
 import os
 import subprocess
 from imaginaire.utils import log
-from cosmos_gradio.gradio_util import get_output_folder, get_outputs
+from gradio_deployment.fwk.gradio_util import get_output_folder, get_outputs
 
 
 class GradioCLIApp:

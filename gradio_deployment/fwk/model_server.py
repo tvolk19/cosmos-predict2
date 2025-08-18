@@ -17,8 +17,8 @@ import subprocess
 import time
 import importlib
 from imaginaire.utils import log
-from cosmos_gradio.command_ipc import WorkerCommand, WorkerStatus
-from cosmos_gradio.server_config import Config
+from gradio_deployment.fwk.command_ipc import WorkerCommand, WorkerStatus
+from gradio_deployment.fwk.server_config import Config
 
 
 class ModelServer:
@@ -93,8 +93,8 @@ class ModelServer:
         module = __import__(cfg.factory_module, fromlist=[cfg.factory_function])
         factory_function = getattr(module, cfg.factory_function)
 
-        module = __import__("cosmos_gradio.model_worker")
-        module = importlib.import_module("cosmos_gradio.model_worker")
+        module = __import__("gradio_deployment.fwk.model_worker")
+        module = importlib.import_module("gradio_deployment.fwk.model_worker")
 
         # if the server is in a library we have to discover the file path
         module_path = module.__file__
@@ -110,7 +110,8 @@ class ModelServer:
             f"--nproc_per_node={self.num_workers}",
             "--nnodes=1",
             "--node_rank=0",
-            "cosmos_gradio/model_worker.py",  # TODO module_path,
+            # module_path,
+            "gradio_deployment/fwk/model_worker.py",
         ]
 
         log.info(f"Running command: {' '.join(torchrun_cmd)}")

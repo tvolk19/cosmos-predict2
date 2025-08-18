@@ -1,9 +1,9 @@
 import json
 import os
-from cosmos_gradio.server_config import Config
-from cosmos_gradio.gradio_app_cli import GradioCLIApp
-from cosmos_gradio.gradio_app import GradioApp
-from cosmos_gradio.gradio_interface import create_gradio_interface
+from gradio_deployment.fwk.server_config import Config
+from gradio_deployment.fwk.gradio_app_cli import GradioCLIApp
+from gradio_deployment.fwk.gradio_app import GradioApp
+from gradio_deployment.fwk.gradio_interface import create_gradio_interface
 from imaginaire.utils import log
 from gradio_deployment.model_config import Config as ModelConfig
 
