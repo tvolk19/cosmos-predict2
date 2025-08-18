@@ -1,5 +1,6 @@
 from gradio_deployment.video2world_worker import Video2World_Validator, Video2World_Worker
 from gradio_deployment.text2image_worker import Text2Image_Validator, Text2Image_Worker
+from gradio_deployment.text2world_worker import Text2World_Worker
 from imaginaire.utils import log
 from gradio_deployment.model_config import Config
 
@@ -7,6 +8,19 @@ prompt = "A nighttime city bus terminal gradually shifts from stillness to subtl
 sample = {"input_path": "assets/video2world/input0.jpg", "num_conditional_frames": 1, "prompt": prompt}
 
 cfg = Config()
+
+
+def test_text2image():
+    validator = Text2Image_Validator()
+    model_params = validator.parse_and_validate({})
+    pipeline = Text2Image_Worker(num_gpus=1, checkpoint_dir=cfg.checkpoint_dir)
+
+    log.info("Inference start****************************************")
+    model_params["output_dir"] = "outputs/"
+    pipeline.infer(
+        model_params,
+    )
+    log.info("Inference complete****************************************")
 
 
 def test_video2world():
@@ -23,10 +37,10 @@ def test_video2world():
     log.info("Inference complete****************************************")
 
 
-def test_text2image():
+def test_text2world():
     validator = Text2Image_Validator()
     model_params = validator.parse_and_validate({})
-    pipeline = Text2Image_Worker(num_gpus=1, checkpoint_dir=cfg.checkpoint_dir)
+    pipeline = Text2World_Worker(num_gpus=1, checkpoint_dir=cfg.checkpoint_dir)
 
     log.info("Inference start****************************************")
     model_params["output_dir"] = "outputs/"
@@ -39,4 +53,5 @@ def test_text2image():
 if __name__ == "__main__":
     log.info(cfg)
     # test_video2world()
-    test_text2image()
+    # test_text2image()
+    test_text2world()

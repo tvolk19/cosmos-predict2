@@ -145,6 +145,8 @@ class Text2Image_Worker:
             seed=seed,
             use_cuda_graphs=use_cuda_graphs,
         )
+
+        output_path = None
         if image is not None:
             if output_dir:
                 os.makedirs(output_dir, exist_ok=True)
@@ -159,8 +161,10 @@ class Text2Image_Worker:
             save_text_prompts(prompts_to_save, output_prompt_path)
             log.success(f"Successfully saved prompt file to: {output_prompt_path}")
 
+        return output_path
+
     def infer(self, args: dict):
-        self._infer(**args)
+        return self._infer(**args)
 
 
 def create_worker(create_model=True):
