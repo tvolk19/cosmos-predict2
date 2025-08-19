@@ -24,8 +24,8 @@ import torch
 from megatron.core import parallel_state
 
 from cosmos_predict2.configs.base.config_video2world import (
-    PREDICT2_VIDEO2WORLD_PIPELINE_2B,
-    PREDICT2_VIDEO2WORLD_PIPELINE_14B,
+    _PREDICT2_VIDEO2WORLD_PIPELINE_2B,
+    _PREDICT2_VIDEO2WORLD_PIPELINE_14B,
 )
 from cosmos_predict2.pipelines.video2world import _IMAGE_EXTENSIONS, _VIDEO_EXTENSIONS, Video2WorldPipeline
 from imaginaire.utils import distributed, log, misc
@@ -130,7 +130,7 @@ class Video2World_Worker:
         log.info(f"Using model size: {model_size}")
 
         if model_size == "2B":
-            config = PREDICT2_VIDEO2WORLD_PIPELINE_2B
+            config = _PREDICT2_VIDEO2WORLD_PIPELINE_2B
 
             config.resolution = resolution
             if fps == 10:  # default is 16 so no need to change config
@@ -138,7 +138,7 @@ class Video2World_Worker:
 
             dit_path = f"{checkpoint_dir}/nvidia/Cosmos-Predict2-2B-Video2World/model-{resolution}p-{fps}fps.pt"
         elif model_size == "14B":
-            config = PREDICT2_VIDEO2WORLD_PIPELINE_14B
+            config = _PREDICT2_VIDEO2WORLD_PIPELINE_14B
 
             config.resolution = resolution
             if fps == 10:  # default is 16 so no need to change config

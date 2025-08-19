@@ -23,9 +23,9 @@ os.environ["TOKENIZERS_PARALLELISM"] = "false"
 import torch
 from megatron.core import parallel_state
 from cosmos_predict2.configs.base.config_text2image import (
-    PREDICT2_TEXT2IMAGE_PIPELINE_0P6B,
-    PREDICT2_TEXT2IMAGE_PIPELINE_2B,
-    PREDICT2_TEXT2IMAGE_PIPELINE_14B,
+    _PREDICT2_TEXT2IMAGE_PIPELINE_0P6B,
+    _PREDICT2_TEXT2IMAGE_PIPELINE_2B,
+    _PREDICT2_TEXT2IMAGE_PIPELINE_14B,
 )
 from cosmos_predict2.pipelines.text2image import Text2ImagePipeline
 from imaginaire.utils import distributed, log, misc
@@ -84,13 +84,13 @@ class Text2Image_Worker:
         log.info(f"Using model size: {model_size}")
 
         if model_size == "0.6B":
-            config = PREDICT2_TEXT2IMAGE_PIPELINE_0P6B
+            config = _PREDICT2_TEXT2IMAGE_PIPELINE_0P6B
             dit_path = f"{checkpoint_dir}/nvidia/Cosmos-Predict2-0.6B-Text2Image/model.pt"
         elif model_size == "2B":
-            config = PREDICT2_TEXT2IMAGE_PIPELINE_2B
+            config = _PREDICT2_TEXT2IMAGE_PIPELINE_2B
             dit_path = f"{checkpoint_dir}/nvidia/Cosmos-Predict2-2B-Text2Image/model.pt"
         elif model_size == "14B":
-            config = PREDICT2_TEXT2IMAGE_PIPELINE_14B
+            config = _PREDICT2_TEXT2IMAGE_PIPELINE_14B
             dit_path = f"{checkpoint_dir}/nvidia/Cosmos-Predict2-14B-Text2Image/model.pt"
         else:
             raise ValueError("Invalid model size. Choose either '0.6B', '2B' or '14B'.")
