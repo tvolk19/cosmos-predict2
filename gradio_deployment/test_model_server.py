@@ -41,5 +41,5 @@ def test_video2world():
 
 
 if __name__ == "__main__":
-    # test_text2image()
+    test_text2image()
     test_video2world()

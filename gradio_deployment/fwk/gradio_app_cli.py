@@ -26,9 +26,12 @@ class GradioCLIApp:
     The parameter validation is left to the CLI app.
     This server has no communication channel with the workers, so no errors are reported."""
 
-    def __init__(self, num_workers: int = 8, checkpoint_dir: str = "checkpoints", out_dir: str = "outputs"):
+    def __init__(
+        self, cli_cmd: str, num_workers: int = 8, checkpoint_dir: str = "checkpoints", out_dir: str = "outputs"
+    ):
+        self.cli_cmd = cli_cmd
         self.num_workers = num_workers
-        self.checkpoint_dir = "checkpoints/nvidia/Cosmos-Transfer2-Private/model.pt"
+        self.checkpoint_dir = checkpoint_dir
         self.process = None
         self.out_dir = out_dir
         self._setup_environment()
@@ -42,8 +45,7 @@ class GradioCLIApp:
         else:
             os.makedirs(output_dir, exist_ok=True)
 
-        log.info(f"Starting {self.num_workers} worker processes with torchrun")
-        cli_cmd = "cosmos_transfer2/inference/inference_vid2vid_control_batch.py"
+        log.info(f"Starting {self.num_workers} worker processes with torchrun {self.cli_cmd}")
 
         log.debug(json.dumps(args, indent=2))
         # Save arguments to JSON file in output_dir
@@ -58,7 +60,7 @@ class GradioCLIApp:
             f"--nproc_per_node={self.num_workers}",
             "--nnodes=1",
             "--node_rank=0",
-            cli_cmd,
+            self.cli_cmd,
             f"--ckpt_path={self.checkpoint_dir}",
             f"--num_gpus={self.num_workers}",
             f"--controlnet_specs={args_file}",

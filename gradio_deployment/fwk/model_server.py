@@ -96,10 +96,11 @@ class ModelServer:
         module = __import__("gradio_deployment.fwk.model_worker")
         module = importlib.import_module("gradio_deployment.fwk.model_worker")
 
-        # if the server is in a library we have to discover the file path
+        # don't rely on CWD to create a file path
         module_path = module.__file__
         log.info(f"Module loaded from: {module_path}")
 
+        # clean-up previous runs
         self.worker_command.cleanup()
         self.worker_status.cleanup()
 
@@ -110,8 +111,7 @@ class ModelServer:
             f"--nproc_per_node={self.num_workers}",
             "--nnodes=1",
             "--node_rank=0",
-            # module_path,
-            "gradio_deployment/fwk/model_worker.py",
+            module_path,
         ]
 
         log.info(f"Running command: {' '.join(torchrun_cmd)}")

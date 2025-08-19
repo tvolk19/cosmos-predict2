@@ -16,7 +16,7 @@
 import gradio as gr
 from gradio_deployment.fwk.server_config import Config
 
-from gradio_deployment.fwk. import gradio_file_server, gradio_log_file_viewer
+from gradio_deployment.fwk import gradio_file_server, gradio_log_file_viewer
 
 
 def create_gradio_interface(infer_func, header, default_request, help_text, cfg):
