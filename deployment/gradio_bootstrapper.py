@@ -14,12 +14,12 @@
 # limitations under the License.
 
 import json
-from gradio_deployment.fwk.server_config import Config
-from gradio_deployment.fwk.gradio_app_cli import GradioCLIApp
-from gradio_deployment.fwk.gradio_app import GradioApp
-from gradio_deployment.fwk.gradio_interface import create_gradio_interface
+from deployment.server.generic.server_config import Config
+from deployment.gradio_app.gradio_app_cli import GradioCLIApp
+from deployment.gradio_app.gradio_app import GradioApp
+from deployment.gradio_app.gradio_interface import create_gradio_interface
 from imaginaire.utils import log
-from gradio_deployment.model_config import Config as ModelConfig
+from deployment.server.model_specific.model_config import Config as ModelConfig
 
 header = {"video2world": "Cosmos-Predict2 Video2World", "text2image": "Cosmos-Predict2 Text2Image"}
 

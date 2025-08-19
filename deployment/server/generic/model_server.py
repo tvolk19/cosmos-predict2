@@ -17,8 +17,8 @@ import subprocess
 import time
 import importlib
 from imaginaire.utils import log
-from gradio_deployment.fwk.command_ipc import WorkerCommand, WorkerStatus
-from gradio_deployment.fwk.server_config import Config
+from deployment.server.generic.command_ipc import WorkerCommand, WorkerStatus
+from deployment.server.model_specific.model_config import Config
 
 
 class ModelServer:
@@ -93,8 +93,7 @@ class ModelServer:
         module = __import__(cfg.factory_module, fromlist=[cfg.factory_function])
         factory_function = getattr(module, cfg.factory_function)
 
-        module = __import__("gradio_deployment.fwk.model_worker")
-        module = importlib.import_module("gradio_deployment.fwk.model_worker")
+        module = importlib.import_module("deployment.server.generic.model_worker")
 
         # don't rely on CWD to create a file path
         module_path = module.__file__

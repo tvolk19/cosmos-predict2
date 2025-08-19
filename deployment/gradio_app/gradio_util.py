@@ -38,10 +38,3 @@ def get_outputs(output_folder):
         )
     else:
         return None, f"Generation failed - no output was created\nCheck folder: {output_folder}"
-
-
-def create_worker_pipeline(cfg, create_model=True):
-    module = __import__(cfg.factory_module, fromlist=[cfg.factory_function])
-    factory_function = getattr(module, cfg.factory_function)
-    log.info(f"initializing model using {cfg.factory_module}.{cfg.factory_function}")
-    return factory_function(create_model=create_model)

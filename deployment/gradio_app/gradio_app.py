@@ -15,8 +15,9 @@
 
 import json
 from imaginaire.utils import log
-from gradio_deployment.fwk.model_server import ModelServer
-from gradio_deployment.fwk.gradio_util import get_output_folder, get_outputs, create_worker_pipeline
+from deployment.server.generic.model_server import ModelServer
+from deployment.gradio_app.gradio_util import get_output_folder, get_outputs
+from deployment.server.generic.model_worker import create_worker_pipeline
 
 
 class GradioApp:

@@ -14,9 +14,8 @@
 # limitations under the License.
 
 import gradio as gr
-from gradio_deployment.fwk.server_config import Config
-
-from gradio_deployment.fwk import gradio_file_server, gradio_log_file_viewer
+from deployment.gradio_app.gradio_file_server import file_server_components
+from deployment.gradio_app.gradio_log_file_viewer import log_file_viewer
 
 
 def create_gradio_interface(infer_func, header, default_request, help_text, cfg):
@@ -25,7 +24,7 @@ def create_gradio_interface(infer_func, header, default_request, help_text, cfg)
         gr.Markdown("Upload a media file. Use the resulting server file path as input media in the json request.")
 
         with gr.Row():
-            gradio_file_server.file_server_components(cfg.uploads_dir, open=False)
+            file_server_components(cfg.uploads_dir, open=False)
 
         gr.Markdown("---")
         gr.Markdown(f"**Output Directory**: {cfg.output_dir}")
@@ -50,7 +49,7 @@ def create_gradio_interface(infer_func, header, default_request, help_text, cfg)
                 status_text = gr.Textbox(label="Status", lines=5, interactive=False)
                 generate_btn = gr.Button("Generate Video", variant="primary", size="lg")
 
-        gradio_log_file_viewer.log_file_viewer(log_file=cfg.log_file, num_lines=100, update_interval=1)
+        log_file_viewer(log_file=cfg.log_file, num_lines=100, update_interval=1)
 
         generate_btn.click(
             fn=infer_func,

@@ -19,9 +19,15 @@ import json
 import torch.distributed as dist
 
 from imaginaire.utils import log
-from gradio_deployment.fwk.command_ipc import WorkerCommand, WorkerStatus
-from gradio_deployment.fwk.server_config import Config
-from gradio_deployment.fwk.gradio_util import create_worker_pipeline
+from deployment.server.generic.command_ipc import WorkerCommand, WorkerStatus
+from deployment.server.generic.server_config import Config
+
+
+def create_worker_pipeline(cfg, create_model=True):
+    module = __import__(cfg.factory_module, fromlist=[cfg.factory_function])
+    factory_function = getattr(module, cfg.factory_function)
+    log.info(f"initializing model using {cfg.factory_module}.{cfg.factory_function}")
+    return factory_function(create_model=create_model)
 
 
 class ParamValidator:

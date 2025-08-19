@@ -16,7 +16,7 @@
 
 import gradio as gr
 
-from gradio_deployment.fwk.server_config import Config
+from deployment.server.generic.server_config import Config
 
 cfg = Config()
 
