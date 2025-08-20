@@ -30,7 +30,6 @@ default_request_v2w = json.dumps(
         "input_path": "assets/video2world/input0.jpg",
         "num_conditional_frames": 1,
         "aspect_ratio": "16:9",
-        "num_conditional_frames": 1,
         "guidance": 7.0,
         "seed": 0,
     },
