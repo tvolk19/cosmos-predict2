@@ -13,14 +13,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import json
 import os
 import traceback
-import json
+
 import torch.distributed as dist
 
-from imaginaire.utils import log
 from deployment.server.generic.command_ipc import WorkerCommand, WorkerStatus
 from deployment.server.generic.server_config import Config
+from imaginaire.utils import log
 
 
 def create_worker_pipeline(cfg, create_model=True):
@@ -134,7 +135,7 @@ def worker_main():
 
     rank = int(os.environ.get("LOCAL_RANK", 0))
     world_size = int(os.environ.get("WORLD_SIZE", 1))
-    log.info(f"Worker init {rank+1}/{world_size}")
+    log.info(f"Worker init {rank + 1}/{world_size}")
 
     worker_cmd = WorkerCommand(world_size)
     worker_status = WorkerStatus(world_size)

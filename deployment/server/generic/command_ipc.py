@@ -17,7 +17,7 @@
 import json
 import os
 import time
-from typing import Any, Dict, Optional
+from typing import Any
 
 from imaginaire.utils import log
 
@@ -34,7 +34,7 @@ class WorkerCommand:
                 if os.path.exists(file_path):
                     os.remove(file_path)
 
-    def _send_command_to_worker(self, rank: int, command: str, params: Optional[Dict[str, Any]] = None):
+    def _send_command_to_worker(self, rank: int, command: str, params: dict[str, Any] | None = None):
         command_file = f"/tmp/worker_{rank}_commands.json"
         command_data = {"command": command, "params": params or {}}
 
@@ -43,14 +43,14 @@ class WorkerCommand:
 
         log.debug(f"Sent command '{command}' to worker {rank}")
 
-    def broadcast(self, task_name: str, task_params: Dict[str, Any]):
+    def broadcast(self, task_name: str, task_params: dict[str, Any]):
         """Broadcast non-blocking a task to all workers."""
         log.debug(f"Broadcasting task '{task_name}' to all workers...")
 
         for rank in range(self.num_workers):
             self._send_command_to_worker(rank, task_name, task_params)
 
-    def wait_for_command(self, rank: int) -> Optional[Dict[str, Any]]:
+    def wait_for_command(self, rank: int) -> dict[str, Any] | None:
         """wait blocking for a command from the worker.
 
         This is an infinite blocking call by design. we want to infintely wait until typically user is sending a request to the worker.
@@ -61,7 +61,7 @@ class WorkerCommand:
             time.sleep(0.5)
 
         try:
-            with open(command_file, "r") as f:
+            with open(command_file) as f:
                 command_data = json.load(f)
             os.remove(command_file)  # Remove command file after reading
             return command_data
@@ -102,7 +102,7 @@ class WorkerStatus:
                 f,
             )
 
-    def _get_worker_status(self, rank: int, timeout: int = 1800) -> Dict[str, Any]:
+    def _get_worker_status(self, rank: int, timeout: int = 1800) -> dict[str, Any]:
         status_file = f"/tmp/worker_{rank}_status.json"
         start_time = time.time()
 
@@ -115,7 +115,7 @@ class WorkerStatus:
             time.sleep(0.5)
 
         try:
-            with open(status_file, "r") as f:
+            with open(status_file) as f:
                 status = json.load(f)
 
             # remove status file so we can do a blocking wait for next status
