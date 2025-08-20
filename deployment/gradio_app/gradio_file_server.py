@@ -168,7 +168,7 @@ def _handle_file_upload_event(temp_files, output_dir: str):
         return "", f"❌ Upload failed: {e!s}", gr.Dropdown()
 
 
-def _format_files_list(files: list[dict] | None = None, output_dir: str = None) -> list[str]:
+def _format_files_list(files: list[dict] | None = None, output_dir: str | None = None) -> list[str]:
     files = files or _get_files_in_output_dir(output_dir)
 
     if not files:
@@ -184,13 +184,15 @@ def _format_files_list(files: list[dict] | None = None, output_dir: str = None) 
 
 def _handle_refresh_button_click_event(
     dropdown_value: str | None | list[str | int | float] = None,
-    output_dir: str = None,
+    output_dir: str | None = None,
 ) -> gr.Dropdown:
     logger.info(f"Refreshing file list: {dropdown_value=}")
     return _view_file_dropdown(value=dropdown_value or None, output_dir=output_dir)
 
 
-def _view_file_dropdown(value: str | None | list[str | int | float] = None, output_dir: str = None) -> gr.Dropdown:
+def _view_file_dropdown(
+    value: str | None | list[str | int | float] = None, output_dir: str | None = None
+) -> gr.Dropdown:
     file_paths_with_icons = _format_files_list(output_dir=output_dir)
     return gr.Dropdown(
         label="Select a File to View",
@@ -252,9 +254,8 @@ def _handle_view_file_dropdown_select_event(selection: str) -> tuple[gr.Video, g
         logger.error(message)
         output_text = gr.Textbox(value=message, visible=True)
 
-    # Finally, return all 4 output components, only one of which will be visible
-    finally:
-        return output_video, output_image, output_json, output_text
+    # Return all 4 output components, only one of which will be visible
+    return output_video, output_image, output_json, output_text
 
 
 def _instructions():
