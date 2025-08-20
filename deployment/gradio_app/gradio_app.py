@@ -14,15 +14,15 @@
 # limitations under the License.
 
 import json
-from imaginaire.utils import log
-from deployment.server.generic.model_server import ModelServer
+
 from deployment.gradio_app.gradio_util import get_output_folder, get_outputs
+from deployment.server.generic.model_server import ModelServer
 from deployment.server.generic.model_worker import create_worker_pipeline
+from imaginaire.utils import log
 
 
 class GradioApp:
     def __init__(self, cfg):
-
         if cfg.num_gpus == 1:
             self.pipeline, self.validator = create_worker_pipeline(cfg)
         else:

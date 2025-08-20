@@ -12,13 +12,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import importlib
 import os
 import subprocess
 import time
-import importlib
-from imaginaire.utils import log
+
 from deployment.server.generic.command_ipc import WorkerCommand, WorkerStatus
 from deployment.server.model_specific.model_config import Config
+from imaginaire.utils import log
 
 
 class ModelServer:

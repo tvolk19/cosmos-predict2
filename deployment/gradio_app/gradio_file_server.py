@@ -38,7 +38,7 @@ def _get_files_in_output_dir(output_dir: str):
         return []
 
     files = []
-    for root, dirs, filenames in os.walk(output_dir):
+    for root, _, filenames in os.walk(output_dir):
         for filename in filenames:
             filepath = os.path.join(root, filename)
             files.append(
@@ -83,7 +83,7 @@ def _format_file_path_with_icon(file_path: str) -> str:
     return f"{icon} {file_path}"
 
 
-def _handle_api_file_upload_event(file: str, upload_dir: str) -> typing.Dict[str, str]:
+def _handle_api_file_upload_event(file: str, upload_dir: str) -> dict[str, str]:
     """
     Event handler for the hidden file upload component.
 
@@ -165,10 +165,10 @@ def _handle_file_upload_event(temp_files, output_dir: str):
 
     except Exception as e:
         logger.error(f"Upload error: {e}")
-        return "", f"❌ Upload failed: {str(e)}", gr.Dropdown()
+        return "", f"❌ Upload failed: {e!s}", gr.Dropdown()
 
 
-def _format_files_list(files: typing.Optional[list[dict]] = None, output_dir: str = None) -> list[str]:
+def _format_files_list(files: list[dict] | None = None, output_dir: str = None) -> list[str]:
     files = files or _get_files_in_output_dir(output_dir)
 
     if not files:
@@ -236,10 +236,10 @@ def _handle_view_file_dropdown_select_event(selection: str) -> tuple[gr.Video, g
         elif file_type == "image":
             output_image = gr.Image(value=file_path, visible=True)
         elif file_type == "json":
-            with open(file_path, "r", encoding="utf-8") as file:
+            with open(file_path, encoding="utf-8") as file:
                 output_json = gr.JSON(value=json.load(file), visible=True)
         elif file_type == "text":
-            with open(file_path, "r", encoding="utf-8") as file:
+            with open(file_path, encoding="utf-8") as file:
                 output_text = gr.Textbox(value=file.read(), visible=True)
         else:
             message = f"Unable to display unsupported file type: {file_path}"
@@ -248,7 +248,7 @@ def _handle_view_file_dropdown_select_event(selection: str) -> tuple[gr.Video, g
 
     # Handle errors by displaying the message in the textbox
     except Exception as e:
-        message = f"Error viewing {selection}: {str(e)}"
+        message = f"Error viewing {selection}: {e!s}"
         logger.error(message)
         output_text = gr.Textbox(value=message, visible=True)
 

@@ -13,9 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import gc
 import json
 import os
-import gc
 
 # Set TOKENIZERS_PARALLELISM environment variable to avoid deadlocks with multiprocessing
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
@@ -28,9 +28,9 @@ from cosmos_predict2.configs.base.config_video2world import (
     _PREDICT2_VIDEO2WORLD_PIPELINE_14B,
 )
 from cosmos_predict2.pipelines.video2world import _IMAGE_EXTENSIONS, _VIDEO_EXTENSIONS, Video2WorldPipeline
-from imaginaire.utils import distributed, log, misc
-from imaginaire.utils.io import save_image_or_video, save_text_prompts
 from deployment.server.model_specific.model_config import Config
+from imaginaire.utils import distributed, log
+from imaginaire.utils.io import save_image_or_video, save_text_prompts
 
 _DEFAULT_NEGATIVE_PROMPT = "The video captures a series of frames showing ugly scenes, static with no motion, motion blur, over-saturation, shaky footage, low resolution, grainy texture, pixelated images, poorly lit areas, underexposed and overexposed scenes, poor color balance, washed out colors, choppy sequences, jerky movements, low frame rate, artifacting, color banding, unnatural transitions, outdated special effects, fake elements, unconvincing visuals, poorly edited content, jump cuts, visual noise, and flickering. Overall, the video is of poor quality."
 
@@ -213,7 +213,6 @@ class Video2World_Worker:
         seed: int = 0,
         use_cuda_graphs: bool = False,
     ):
-
         log.info(f"Running Video2WorldPipeline\ninput: {input_path}\nprompt: {prompt}")
 
         # misc.set_random_seed(seed=seed, by_rank=True)
@@ -258,7 +257,6 @@ class Video2World_Worker:
 
 
 def create_worker(create_model=True):
-
     log.info("Creating predict pipeline and validator")
     cfg = Config()
     pipeline = None

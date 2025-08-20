@@ -14,12 +14,13 @@
 # limitations under the License.
 
 import json
-from deployment.server.generic.server_config import Config
-from deployment.gradio_app.gradio_app_cli import GradioCLIApp
+
 from deployment.gradio_app.gradio_app import GradioApp
+from deployment.gradio_app.gradio_app_cli import GradioCLIApp
 from deployment.gradio_app.gradio_interface import create_gradio_interface
-from imaginaire.utils import log
+from deployment.server.generic.server_config import Config
 from deployment.server.model_specific.model_config import Config as ModelConfig
+from imaginaire.utils import log
 
 header = {"video2world": "Cosmos-Predict2 Video2World", "text2image": "Cosmos-Predict2 Text2Image"}
 
@@ -71,12 +72,11 @@ help_text = {
 }
 
 if __name__ == "__main__":
-
     cfg = Config()
     model_cfg = ModelConfig()
 
-    log.info(f"Starting Gradio app with model config: {str(model_cfg)}")
-    log.info(f"server config: {str(cfg)}")
+    log.info(f"Starting Gradio app with model config: {model_cfg!s}")
+    log.info(f"server config: {cfg!s}")
 
     if cfg.use_cli:
         app = GradioCLIApp(cli_cmd=cfg.cli_app, num_workers=cfg.num_gpus, checkpoint_dir=model_cfg.checkpoint_dir)

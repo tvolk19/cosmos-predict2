@@ -13,30 +13,30 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import gc
 import json
 import os
-import gc
 
 # Set TOKENIZERS_PARALLELISM environment variable to avoid deadlocks with multiprocessing
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 import torch
 from megatron.core import parallel_state
+
 from cosmos_predict2.configs.base.config_text2image import (
     _PREDICT2_TEXT2IMAGE_PIPELINE_0P6B,
     _PREDICT2_TEXT2IMAGE_PIPELINE_2B,
     _PREDICT2_TEXT2IMAGE_PIPELINE_14B,
 )
 from cosmos_predict2.pipelines.text2image import Text2ImagePipeline
-from imaginaire.utils import distributed, log, misc
-from imaginaire.utils.io import save_image_or_video, save_text_prompts
 from deployment.server.model_specific.model_config import Config
+from imaginaire.utils import distributed, log
+from imaginaire.utils.io import save_image_or_video, save_text_prompts
 
 _DEFAULT_POSITIVE_PROMPT = "A well-worn broom sweeps across a dusty wooden floor, its bristles gathering crumbs and flecks of debris in swift, rhythmic strokes. Dust motes dance in the sunbeams filtering through the window, glowing momentarily before settling. The quiet swish of straw brushing wood is interrupted only by the occasional creak of old floorboards. With each pass, the floor grows cleaner, restoring a sense of quiet order to the humble room."
 
 
 class Text2Image_Validator:
-
     def validate_params(
         self,
         prompt: str = _DEFAULT_POSITIVE_PROMPT,
@@ -150,7 +150,6 @@ class Text2Image_Worker:
         seed: int = 0,
         use_cuda_graphs: bool = False,
     ):
-
         log.info(f"Running Text2ImagePipeline\nprompt: {prompt}")
 
         image = self.pipe(
@@ -179,7 +178,6 @@ class Text2Image_Worker:
 
 
 def create_worker(create_model=True):
-
     log.info("Creating predict pipeline and validator")
     cfg = Config()
     pipeline = None
