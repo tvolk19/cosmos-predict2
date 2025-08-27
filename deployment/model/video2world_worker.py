@@ -28,7 +28,9 @@ from cosmos_predict2.configs.base.config_video2world import (
     _PREDICT2_VIDEO2WORLD_PIPELINE_14B,
 )
 from cosmos_predict2.pipelines.video2world import _IMAGE_EXTENSIONS, _VIDEO_EXTENSIONS, Video2WorldPipeline
-from deployment.server.model_specific.model_config import Config
+from deployment.model.model_config import Config
+from cosmos_gradio.deployment_env import DeploymentEnv
+
 from imaginaire.utils import distributed, log
 from imaginaire.utils.io import save_image_or_video, save_text_prompts
 
@@ -259,11 +261,12 @@ class Video2World_Worker:
 def create_worker(create_model=True):
     log.info("Creating predict pipeline and validator")
     cfg = Config()
+    global_env = DeploymentEnv()
     pipeline = None
     if create_model:
         pipeline = Video2World_Worker(
-            num_gpus=int(os.environ.get("WORLD_SIZE", 1)),
-            checkpoint_dir=cfg.checkpoint_dir,
+            num_gpus=global_env.num_gpus,
+            checkpoint_dir=global_env.checkpoint_dir,
             model_size=cfg.model_size,
             resolution=cfg.resolution,
             fps=cfg.fps,
