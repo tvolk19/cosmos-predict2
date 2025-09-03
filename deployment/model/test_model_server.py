@@ -10,12 +10,13 @@ sample = {"input_path": "assets/video2world/input0.jpg", "num_conditional_frames
 
 
 def test_text2image():
-    os.environ["FACTORY_MODULE"] = "deployment.model.text2image_worker"
     cfg = DeploymentEnv()
 
     folder = "outputs/"
     with ModelServer(
-        num_gpus=cfg.num_gpus, factory_module=cfg.factory_module, factory_function=cfg.factory_function
+        num_gpus=cfg.num_gpus,
+        factory_module="deployment.model.text2image_worker",
+        factory_function="create_worker",
     ) as pipeline:
         validator = Text2Image_Validator()
 
@@ -28,12 +29,13 @@ def test_text2image():
 
 
 def test_video2world():
-    os.environ["FACTORY_MODULE"] = "deployment.model.video2world_worker"
     cfg = DeploymentEnv()
 
     folder = "outputs/"
     with ModelServer(
-        num_gpus=cfg.num_gpus, factory_module=cfg.factory_module, factory_function=cfg.factory_function
+        num_gpus=cfg.num_gpus,
+        factory_module="deployment.model.video2world_worker",
+        factory_function="create_worker",
     ) as pipeline:
         validator = Video2World_Validator()
 

@@ -258,24 +258,21 @@ class Video2World_Worker:
         self._infer(**args)
 
 
-def create_worker(create_model=True):
+def create_worker():
     log.info("Creating predict pipeline and validator")
     cfg = Config()
     global_env = DeploymentEnv()
-    pipeline = None
-    if create_model:
-        pipeline = Video2World_Worker(
-            num_gpus=global_env.num_gpus,
-            checkpoint_dir=global_env.checkpoint_dir,
-            model_size=cfg.model_size,
-            resolution=cfg.resolution,
-            fps=cfg.fps,
-            load_ema=cfg.load_ema,
-            disable_prompt_refiner=cfg.disable_prompt_refiner,
-            offload_prompt_refiner=cfg.offload_prompt_refiner,
-        )
-        gc.collect()
-        torch.cuda.empty_cache()
+    pipeline = Video2World_Worker(
+        num_gpus=global_env.num_gpus,
+        checkpoint_dir=global_env.checkpoint_dir,
+        model_size=cfg.model_size,
+        resolution=cfg.resolution,
+        fps=cfg.fps,
+        load_ema=cfg.load_ema,
+        disable_prompt_refiner=cfg.disable_prompt_refiner,
+        offload_prompt_refiner=cfg.offload_prompt_refiner,
+    )
+    gc.collect()
+    torch.cuda.empty_cache()
 
-    validator = Video2World_Validator()
-    return pipeline, validator
+    return pipeline

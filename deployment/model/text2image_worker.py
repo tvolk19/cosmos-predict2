@@ -178,20 +178,17 @@ class Text2Image_Worker:
         self._infer(**args)
 
 
-def create_worker(create_model=True):
+def create_worker():
     log.info("Creating predict pipeline and validator")
     cfg = Config()
     global_env = DeploymentEnv()
-    pipeline = None
-    if create_model:
-        pipeline = Text2Image_Worker(
-            num_gpus=global_env.num_gpus,
-            checkpoint_dir=global_env.checkpoint_dir,
-            model_size=cfg.model_size,
-            load_ema=cfg.load_ema,
-        )
-        gc.collect()
-        torch.cuda.empty_cache()
+    pipeline = Text2Image_Worker(
+        num_gpus=global_env.num_gpus,
+        checkpoint_dir=global_env.checkpoint_dir,
+        model_size=cfg.model_size,
+        load_ema=cfg.load_ema,
+    )
+    gc.collect()
+    torch.cuda.empty_cache()
 
-    validator = Text2Image_Validator()
-    return pipeline, validator
+    return pipeline

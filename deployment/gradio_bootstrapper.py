@@ -20,6 +20,8 @@ from cosmos_gradio.gradio_app.gradio_app import GradioApp
 from cosmos_gradio.gradio_app.gradio_ui import create_gradio_UI
 from cosmos_gradio.deployment_env import DeploymentEnv
 from deployment.model.model_config import Config as ModelConfig
+from deployment.model.text2image_worker import Text2Image_Validator
+from deployment.model.video2world_worker import Video2World_Validator
 from imaginaire.utils import log
 
 
@@ -28,16 +30,26 @@ if __name__ == "__main__":
     global_env = DeploymentEnv()
 
     # configure server to use the correct worker in the worker procs
-    if global_env.model_name == "text2image":
-        os.environ["FACTORY_MODULE"] = "deployment.model.text2image_worker"
-    elif global_env.model_name == "video2world":
-        os.environ["FACTORY_MODULE"] = "deployment.model.video2world_worker"
+    factory_module = {
+        "text2image": "deployment.model.text2image_worker",
+        "video2world": "deployment.model.video2world_worker",
+    }
 
+    validators = {
+        "text2image": Text2Image_Validator(),
+        "video2world": Video2World_Validator(),
+    }
     global_env = DeploymentEnv()
 
     log.info(f"Starting Gradio app with deployment config: {global_env!s}")
 
-    app = GradioApp(global_env.num_gpus, global_env.factory_module, global_env.factory_function, global_env.output_dir)
+    app = GradioApp(
+        num_gpus=global_env.num_gpus,
+        validator=validators[global_env.model_name],
+        factory_module=factory_module[global_env.model_name],
+        factory_function="create_worker",
+        output_dir=global_env.output_dir,
+    )
 
     interface = create_gradio_UI(
         app.infer,
