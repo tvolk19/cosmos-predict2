@@ -36,6 +36,10 @@ from imaginaire.utils.io import save_image_or_video, save_text_prompts
 
 _DEFAULT_POSITIVE_PROMPT = "A well-worn broom sweeps across a dusty wooden floor, its bristles gathering crumbs and flecks of debris in swift, rhythmic strokes. Dust motes dance in the sunbeams filtering through the window, glowing momentarily before settling. The quiet swish of straw brushing wood is interrupted only by the occasional creak of old floorboards. With each pass, the floor grows cleaner, restoring a sense of quiet order to the humble room."
 
+"""
+modeled after CLI example examples/text2image.py
+"""
+
 
 class Text2Image_Validator:
     def validate_params(
@@ -98,10 +102,6 @@ class Text2Image_Worker:
 
         log.info(f"Using dit_path: {dit_path}")
 
-        # Only set up text encoder path if no encoder is provided
-        text_encoder_path = f"{checkpoint_dir}/google-t5/t5-11b"
-        log.info(f"Using text encoder from: {text_encoder_path}")
-
         # Initialize cuDNN.
         torch.backends.cudnn.deterministic = False
         torch.backends.cudnn.benchmark = True
@@ -111,6 +111,14 @@ class Text2Image_Worker:
         config.guardrail_config.enabled = False
         config.tokenizer.vae_pth = config.tokenizer.vae_pth.replace("checkpoints/", "")
         config.tokenizer.vae_pth = os.path.join(checkpoint_dir, config.tokenizer.vae_pth)
+        config.text_encoder.cosmos_reason1.ckpt_path = config.text_encoder.cosmos_reason1.ckpt_path.replace(
+            "checkpoints/", ""
+        )
+        config.text_encoder.cosmos_reason1.ckpt_path = os.path.join(
+            checkpoint_dir, config.text_encoder.cosmos_reason1.ckpt_path
+        )
+        config.text_encoder.t5.ckpt_path = config.text_encoder.t5.ckpt_path.replace("checkpoints/", "")
+        config.text_encoder.t5.ckpt_path = os.path.join(checkpoint_dir, config.text_encoder.t5.ckpt_path)
 
         # Initialize distributed environment for multi-GPU inference
         if num_gpus > 1:
@@ -136,7 +144,6 @@ class Text2Image_Worker:
         self.pipe = Text2ImagePipeline.from_config(
             config=config,
             dit_path=dit_path,
-            text_encoder_path=text_encoder_path,
             device="cuda",
             torch_dtype=torch.bfloat16,
             load_ema_to_reg=load_ema,
@@ -173,9 +180,12 @@ class Text2Image_Worker:
             prompts_to_save = {"prompt": prompt, "negative_prompt": negative_prompt}
             save_text_prompts(prompts_to_save, output_prompt_path)
             log.success(f"Successfully saved prompt file to: {output_prompt_path}")
+            return {"images": [output_path], "prompt": prompt, "negative_prompt": negative_prompt}
+        else:
+            return {"images": [], "prompt": prompt, "negative_prompt": negative_prompt}
 
     def infer(self, args: dict):
-        self._infer(**args)
+        return self._infer(**args)
 
 
 def create_worker():

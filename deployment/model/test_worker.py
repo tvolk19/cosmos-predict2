@@ -13,7 +13,7 @@ global_env = DeploymentEnv()
 def test_video2world():
     validator = Video2World_Validator()
     model_params = validator.parse_and_validate(sample)
-    pipeline = Video2World_Worker(num_gpus=1, checkpoint_dir=global_env.checkpoint_dir)
+    pipeline = Video2World_Worker(num_gpus=1, checkpoint_dir=global_env.checkpoint_dir, model_size="2p5B")
 
     log.info("Inference start****************************************")
 
@@ -39,5 +39,5 @@ def test_text2image():
 
 if __name__ == "__main__":
     log.info(global_env)
-    # test_video2world()
-    test_text2image()
+    test_video2world()
+    # test_text2image()

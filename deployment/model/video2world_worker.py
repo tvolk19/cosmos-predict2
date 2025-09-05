@@ -139,6 +139,9 @@ class Video2World_Worker:
                 config.state_t = 16
 
             dit_path = f"{checkpoint_dir}/nvidia/Cosmos-Predict2-2B-Video2World/model-{resolution}p-{fps}fps.pt"
+        elif model_size == "2p5B":
+            config = _PREDICT2_VIDEO2WORLD_PIPELINE_2B
+            dit_path = f"{checkpoint_dir}/nvidia/Cosmos-Predict2.5-2B/base/model-video2world-720p-16fps-postrained.pt"
         elif model_size == "14B":
             config = _PREDICT2_VIDEO2WORLD_PIPELINE_14B
 
@@ -151,10 +154,6 @@ class Video2World_Worker:
             raise ValueError("Invalid model size. Choose either '2B' or '14B'.")
 
         log.info(f"Using dit_path: {dit_path}")
-
-        # Only set up text encoder path if no encoder is provided
-        text_encoder_path = f"{checkpoint_dir}/google-t5/t5-11b"
-        log.info(f"Using text encoder from: {text_encoder_path}")
 
         # Initialize cuDNN.
         torch.backends.cudnn.deterministic = False
@@ -190,13 +189,20 @@ class Video2World_Worker:
         config.guardrail_config.enabled = False
         config.tokenizer.vae_pth = config.tokenizer.vae_pth.replace("checkpoints/", "")
         config.tokenizer.vae_pth = os.path.join(checkpoint_dir, config.tokenizer.vae_pth)
+        config.text_encoder.cosmos_reason1.ckpt_path = config.text_encoder.cosmos_reason1.ckpt_path.replace(
+            "checkpoints/", ""
+        )
+        config.text_encoder.cosmos_reason1.ckpt_path = os.path.join(
+            checkpoint_dir, config.text_encoder.cosmos_reason1.ckpt_path
+        )
+        config.text_encoder.t5.ckpt_path = config.text_encoder.t5.ckpt_path.replace("checkpoints/", "")
+        config.text_encoder.t5.ckpt_path = os.path.join(checkpoint_dir, config.text_encoder.t5.ckpt_path)
 
         # Load models
         log.info(f"Initializing Video2WorldPipeline with model size: {model_size}")
         self.pipe = Video2WorldPipeline.from_config(
             config=config,
             dit_path=dit_path,
-            text_encoder_path=text_encoder_path,
             device="cuda",
             torch_dtype=torch.bfloat16,
             load_ema_to_reg=load_ema,
@@ -253,9 +259,12 @@ class Video2World_Worker:
                 prompts_to_save["refined_prompt"] = prompt_used
             save_text_prompts(prompts_to_save, output_prompt_path)
             log.success(f"Successfully saved prompt file to: {output_prompt_path}")
+            return {"videos": [output_path], "prompt": prompt, "negative_prompt": negative_prompt}
+        else:
+            return {"videos": [], "prompt": prompt, "negative_prompt": negative_prompt}
 
     def infer(self, args: dict):
-        self._infer(**args)
+        return self._infer(**args)
 
 
 def create_worker():
